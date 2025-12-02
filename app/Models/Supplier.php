@@ -8,6 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
+    public function billings()
+    {
+        return $this->hasMany(SupplierBillings::class, 'supplier_id');
+    }
+
+    public function getBalanceAttribute()
+    {
+        $totalBills = $this->billings()->sum('bill_amount');
+        $totalPaid = $this->billings()->sum('paid');
+
+        return $totalBills - $totalPaid;
+    }
 }
