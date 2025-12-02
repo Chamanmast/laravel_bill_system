@@ -22,10 +22,6 @@ class ItemInfolist
                         TextEntry::make('name')
                             ->label('Item Name'),
 
-                        // Supplier
-                        TextEntry::make('supplier.shop_name')
-                            ->label('Supplier')
-                            ->placeholder('—'),
 
                         // Type
                         TextEntry::make('type.name')

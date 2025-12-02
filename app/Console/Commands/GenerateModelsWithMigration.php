@@ -9,81 +9,25 @@ use Illuminate\Support\Str;
 class GenerateModelsWithMigration extends Command
 {
     protected $signature = 'app:gen';
+
     protected $description = 'Generate multiple models with migrations + Filament v4 resources';
 
     public function handle()
     {
         // Define the models and their fields with types and options
         $models = [
-            'item' => [
-
-                // Primary Key
-                'id' => ['type' => 'id'],
-
-                // Foreign Keys
-                'supplier_id' => ['type' => 'integer', 'options' => ['nullable' => true]],
-                'type_id'     => ['type' => 'integer', 'options' => ['nullable' => true]],
-                'purity_id'   => ['type' => 'integer', 'options' => ['nullable' => true]],
-                'unit_id'     => ['type' => 'integer', 'options' => ['nullable' => true]],
-
-                // Core Fields
-                'sku'  => ['type' => 'string', 'options' => ['unique' => true]],
-                'name' => ['type' => 'string'],
-
-                // Pricing Fields
-                'price' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 12, 'scale' => 2, 'nullable' => true],
-                ],
-                'making_charge' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 10, 'scale' => 2, 'default' => 0],
-                ],
-                'rate_per_gram' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 10, 'scale' => 2, 'default' => 0],
-                ],
-                'gst_percent' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 5, 'scale' => 2, 'default' => 0],
-                ],
-
-                // Weight Fields
-                'gross_weight' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 10, 'scale' => 4],
-                ],
-                'net_weight' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 10, 'scale' => 4],
-                ],
-
-                // Stock
-                'stock_qty' => [
-                    'type' => 'decimal',
-                    'options' => ['precision' => 10, 'scale' => 4, 'default' => 1],
-                ],
-
-                // Media
-                'image' => ['type' => 'string', 'options' => ['nullable' => true]],
-
-                // Enum Status
-                'pstatus' => [
-                    'type' => 'enum',
-                    'options' => [
-                        'values'  => ['in_stock', 'sold', 'returned'],
-                        'default' => 'in_stock',
-                    ],
-                ],
-
-                // Boolean Status
-                'status' => ['type' => 'boolean', 'options' => ['default' => 0]],
-
+            'supplier_billings' => [
+                'supplier_id' => ['type' => 'string', 'options' => ['nullable' => true]],
+                'bill_image' => ['type' => 'string', 'options' => ['nullable' => true]],
+                'payment' => ['type' => 'integer', 'options' => ['default' => 0]],
+                'received' => ['type' => 'integer', 'options' => ['default' => 0]],
+                'payment_mode' => ['type' => 'integer', 'options' => ['default' => 0]],
+                'transaction_id' => ['type' => 'string', 'options' => ['nullable' => true]],
+                'note' => ['type' => 'mediumtext', 'options' => ['nullable' => true]],
                 // Timestamps
                 'created_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
                 'updated_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
             ],
-
 
         ];
 
@@ -136,7 +80,7 @@ class GenerateModelsWithMigration extends Command
     protected function getLastMigrationFile(): string
     {
         $last = collect(File::files(database_path('migrations')))
-            ->sortByDesc(fn($file) => $file->getMTime())
+            ->sortByDesc(fn ($file) => $file->getMTime())
             ->first();
 
         if (! $last) {
@@ -151,7 +95,7 @@ class GenerateModelsWithMigration extends Command
         $migrationFile = $this->getLastMigrationFile();
         $table = Str::plural(Str::snake($model));
 
-        $fieldLines = "";
+        $fieldLines = '';
 
         foreach ($fields as $field => $props) {
             // Support multiple input shapes: ['type'=>'string','options'=>[]] or numeric array
@@ -188,8 +132,9 @@ class GenerateModelsWithMigration extends Command
 
             // build line
             if ($method === 'id') {
-                $line = "\$table->id();";
+                $line = '$table->id();';
                 $fieldLines .= "            $line\n";
+
                 continue;
             }
 
@@ -199,32 +144,32 @@ class GenerateModelsWithMigration extends Command
             if ($length) {
                 $line .= ", $length";
             }
-            $line .= ")";
+            $line .= ')';
 
             if (! empty($options['nullable'])) {
-                $line .= "->nullable()";
+                $line .= '->nullable()';
             }
             if (array_key_exists('default', $options)) {
                 $default = $options['default'];
-                $line .= "->default(" . var_export($default, true) . ")";
+                $line .= '->default('.var_export($default, true).')';
             }
             if (! empty($options['unique'])) {
-                $line .= "->unique()";
+                $line .= '->unique()';
             }
             if (! empty($options['unsigned'])) {
-                $line .= "->unsigned()";
+                $line .= '->unsigned()';
             }
             if (! empty($options['useCurrent'])) {
-                $line .= "->useCurrent()";
+                $line .= '->useCurrent()';
             }
 
-            $line .= ";";
+            $line .= ';';
             $fieldLines .= "            $line\n";
         }
 
         $content = file_get_contents($migrationFile);
 
-        $pattern = '/Schema::create\(\s*[\'\"]' . preg_quote($table, '/') . '[\'\"]\s*,\s*function\s*\(Blueprint\s*\$table\)\s*\{(.*?)\}\s*\);/s';
+        $pattern = '/Schema::create\(\s*[\'\"]'.preg_quote($table, '/').'[\'\"]\s*,\s*function\s*\(Blueprint\s*\$table\)\s*\{(.*?)\}\s*\);/s';
 
         if (preg_match($pattern, $content)) {
             $replacement = "Schema::create('$table', function (Blueprint \$table) {\n$fieldLines        });";

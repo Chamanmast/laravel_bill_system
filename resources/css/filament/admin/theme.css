@@ -1,0 +1,47 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+
+@theme {
+    --color-main-primary: rgb(242, 241, 235);
+    --color-main-secondary: rgb(204, 197, 181);
+    --color-main-black: rgb(48, 43, 47);
+    --color-main-white: rgb(255, 255, 255);
+    --color-main-accent: rgb(241, 202, 59);
+}
+.fi-body {
+   @apply bg-main-primary;
+}
+
+.fi-topbar {
+    @apply bg-main-primary shadow-none ring-0;
+}
+
+.fi-sidebar {
+    @apply bg-main-white rounded-2xl ml-2 shadow-lg;
+}
+.fi-body-has-topbar .fi-sidebar {
+    height: calc(100vh - 6rem);
+}
+.fi-sidebar .fi-sidebar-item>.fi-sidebar-item-btn {
+    @apply rounded-2xl hover:bg-main-black;
+}
+.fi-sidebar .fi-sidebar-item > .fi-sidebar-item-btn:hover .fi-sidebar-item-label {
+    @apply text-main-white;
+}
+.fi-btn{
+    @apply rounded-xl bg-main-black border-0 hover:bg-main-secondary text-main-white;
+}
+.fi-topbar .fi-input-wrp{
+    @apply rounded-2xl bg-main-white shadow-none ring-0;
+}
+
+.fi-ta-ctn .fi-input-wrp{
+    @apply rounded-2xl bg-main-white  ring-0;
+}
+.fi-ta-ctn .fi-icon-btn{
+    @apply bg-main-white rounded-full shadow-md hover:bg-main-black hover:text-main-white;
+}
+

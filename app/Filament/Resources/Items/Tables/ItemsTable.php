@@ -40,10 +40,6 @@ class ItemsTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('supplier.shop_name')
-                    ->label('Supplier')
-                    ->toggleable()
-                    ->sortable(),
 
                 TextColumn::make('type.name')
                     ->label('Type')
@@ -52,16 +48,23 @@ class ItemsTable
 
                 TextColumn::make('purity.name')
                     ->label('Purity')
+                    ->formatStateUsing(function ($state) {
+                        if (!$state) return '-';
+
+                        $parts = explode('-', $state, 2);
+
+                        // Trim spaces
+                        $left  = trim($parts[0]);           // "24K"
+                        $right = trim($parts[1] ?? '');     // "(99.9% Pure Gold)"
+
+                        return "{$left}";
+                    })
+                    ->badge()
                     ->toggleable(),
 
-                TextColumn::make('unit.name')
-                    ->label('Unit')
-                    ->toggleable(),
 
-                TextColumn::make('price')
-                    ->label('Price')
-                    ->money('INR')
-                    ->sortable(),
+
+
 
                 TextColumn::make('gross_weight')
                     ->label('Gross Wt')
@@ -76,7 +79,10 @@ class ItemsTable
                 TextColumn::make('stock_qty')
                     ->label('Qty')
                     ->sortable(),
-
+                   TextColumn::make('price')
+                    ->label('Price')
+                    ->money('INR')
+                    ->sortable(),
                 ToggleColumn::make('status')
                     ->label('Status')
                     ->offColor('success') // Optional: Color for "on" state

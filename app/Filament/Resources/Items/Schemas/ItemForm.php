@@ -23,11 +23,7 @@ class ItemForm
                 Section::make('Basic Information')
                     ->schema([
 
-                        Select::make('supplier_id')
-                            ->label('Supplier')
-                            ->options(Supplier::where('status', 0)->pluck('shop_name', 'id'))
-                            ->searchable()
-                            ->native(false),
+
 
                         // ===========================
                         //  TYPE SELECT (Parent)

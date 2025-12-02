@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->integer('supplier_id')->nullable();
             $table->integer('type_id')->nullable();
             $table->integer('purity_id')->nullable();
             $table->integer('unit_id')->nullable();

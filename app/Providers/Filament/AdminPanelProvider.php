@@ -2,6 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\SiteSettings;
+use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
+use Caresome\FilamentAuthDesigner\Enums\AuthLayout;
+use Caresome\FilamentAuthDesigner\Enums\MediaDirection;
+use Caresome\FilamentAuthDesigner\Enums\ThemePosition;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -23,18 +28,17 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $site_title = SiteSettings::find(1)->value('site_title');
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+               // Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -54,6 +58,24 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->darkMode(true)
+            ->brandName($site_title)
+            ->colors([
+                'danger' => Color::Rose,
+                'gray' => Color::Gray,
+                'info' => Color::Blue,
+                'primary' => Color::Orange,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->plugin(AuthDesignerPlugin::make()
+                ->login(
+                    layout: AuthLayout::Overlay,
+                    media: asset('assets/bg-login.png'),
+                    blur: 10,
+                    direction: MediaDirection::Left
+                )->themeToggle(ThemePosition::BottomLeft));
     }
 }
