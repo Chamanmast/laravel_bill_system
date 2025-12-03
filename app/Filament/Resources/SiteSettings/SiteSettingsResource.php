@@ -11,18 +11,19 @@ use App\Filament\Resources\SiteSettings\Schemas\SiteSettingsInfolist;
 use App\Filament\Resources\SiteSettings\Tables\SiteSettingsTable;
 use App\Models\SiteSettings;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class SiteSettingsResource extends Resource
 {
     protected static ?string $model = SiteSettings::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
     protected static ?string $recordTitleAttribute = 'SiteSettings';
 

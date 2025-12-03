@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\Purities\Tables;
 
+use App\Models\Type;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use App\Models\Type;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PuritiesTable
@@ -24,29 +24,36 @@ class PuritiesTable
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('type.name')
-                    ->label('Type')
-                    ->placeholder('— No Type —')
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->placeholder('— No Category —')
+                    ->badge()
+                    ->color(function ($record) {
+                        if (!$record->category_id) {
+                            return 'secondary'; // no category
+                        }
+
+                        return match ($record->category_id) {
+                            1 => 'warning',   // Category = 1 → Yellow
+                            2 => 'secondary', // Category = 2 → Gray
+                            3 => 'info',      // Category = 3 → Blue
+                            default => 'primary', // fallback
+                        };
+                    })
                     ->sortable()
                     ->searchable(),
 
                 ToggleColumn::make('status')
                     ->label('Status')
-                    ->offColor('success')
+                    ->offColor('success'),
 
             ])
 
             ->filters([
-                SelectFilter::make('type_id')
-                    ->label('Filter by Type')
-                    ->options(
-                        Type::query()
-                            ->where('status', 0)
-                            ->whereNull('parent_id')
-                            ->pluck('name', 'id')
-                    )
+                SelectFilter::make('category_id')
+                    ->label('Filter by category')
                     ->searchable()
-                    ->placeholder('All Types'),
+                    ->placeholder('All Category'),
             ])
 
             ->recordActions([

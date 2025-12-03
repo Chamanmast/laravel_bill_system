@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Filament\Resources\Types\Schemas;
+namespace App\Filament\Resources\Categories\Schemas;
 
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
-class TypeInfolist
+class CategoryInfolist
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('Type Information')
+                Section::make('Category Information')
                     ->schema([
 
-                        TextEntry::make('name')
+                         TextEntry::make('name')
                             ->label('Type Name'),
 
-                        TextEntry::make('category.name')
-                            ->label('category Name'),
+
+
 
                     ])
                     ->columns(2)

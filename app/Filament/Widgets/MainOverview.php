@@ -17,11 +17,11 @@ class MainOverview extends BaseWidget
                 ->description('All registered customers')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
-                Stat::make('Total Items', Item::count())
+            Stat::make('Total Items', Item::count())
                 ->description('All registered items')
                 ->descriptionIcon('heroicon-m-cube')
                 ->color('warning'),
-                   Stat::make('Total Suppliers', Supplier::count())
+            Stat::make('Total Suppliers', Supplier::count())
                 ->description('All registered suppliers')
                 ->descriptionIcon('heroicon-m-truck')
                 ->color('info'),

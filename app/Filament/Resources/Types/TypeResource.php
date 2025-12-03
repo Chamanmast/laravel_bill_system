@@ -11,19 +11,22 @@ use App\Filament\Resources\Types\Schemas\TypeInfolist;
 use App\Filament\Resources\Types\Tables\TypesTable;
 use App\Models\Type;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TypeResource extends Resource
 {
     protected static ?string $model = Type::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
+
     protected static ?int $navigationSort = 3;
+
     protected static ?string $recordTitleAttribute = 'Types';
 
     public static function form(Schema $schema): Schema
@@ -47,11 +50,11 @@ class TypeResource extends Resource
             //
         ];
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
-
 
     public static function getPages(): array
     {

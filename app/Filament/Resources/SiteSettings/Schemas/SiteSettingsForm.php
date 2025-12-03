@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\SiteSettings\Schemas;
 
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SiteSettingsForm
@@ -40,23 +40,22 @@ class SiteSettingsForm
                 ])
                 ->columnSpanFull(),
 
-
             Section::make('General Settings')
                 ->schema([
                     Grid::make(2)
                         ->schema([
-                    TextInput::make('site_title')
-                        ->label('Site Title')
-                        ->maxLength(100)
-                        ->required(),
+                            TextInput::make('site_title')
+                                ->label('Site Title')
+                                ->maxLength(100)
+                                ->required(),
 
-                    TextInput::make('app_name')
-                        ->label('App Name')
-                        ->maxLength(100)
-                        ->nullable(),
+                            TextInput::make('app_name')
+                                ->label('App Name')
+                                ->maxLength(100)
+                                ->nullable(),
 
                         ]),
-                        Textarea::make('address')
+                    Textarea::make('address')
                         ->label('Address')
                         ->nullable(),
                     Grid::make(2)
@@ -75,12 +74,9 @@ class SiteSettingsForm
                                 ->maxLength(50)
                                 ->nullable(),
 
-
-
                         ]),
                 ])
                 ->columnSpanFull(),
-
 
         ]);
     }

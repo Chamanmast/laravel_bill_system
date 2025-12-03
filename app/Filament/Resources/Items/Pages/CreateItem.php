@@ -13,7 +13,7 @@ class CreateItem extends CreateRecord
     {
 
         // Save subtype as type_id
-        if (!empty($data['subtype_id'])) {
+        if (! empty($data['subtype_id'])) {
             $data['type_id'] = $data['subtype_id'];
         }
         unset($data['subtype_id']);

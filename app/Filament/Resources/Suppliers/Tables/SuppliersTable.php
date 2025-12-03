@@ -2,23 +2,18 @@
 
 namespace App\Filament\Resources\Suppliers\Tables;
 
-use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
-
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkActionGroup;
-
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section as ComponentsSection;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Table;
 
 class SuppliersTable
 {
@@ -47,15 +42,15 @@ class SuppliersTable
                     ->label('Balance')
                     ->getStateUsing(function ($record) {
 
-                        $formatted = MONEY . ' ' . number_format($record->balance);
+                        $formatted = MONEY.' '.number_format($record->balance);
 
                         if ($record->balance <= 0) {
-                            return '<span class="text-success font-semibold">' . $formatted . '</span>';
+                            return '<span class="text-success font-semibold">'.$formatted.'</span>';
                         }
 
                         return '
                             <span class="px-2 py-1 rounded bg-info text-dark font-semibold inline-block">
-                                ' . $formatted . '
+                                '.$formatted.'
                             </span>
                         ';
                     })
@@ -92,37 +87,34 @@ class SuppliersTable
                     ->label('Full Pay')
                     ->icon('heroicon-o-banknotes')
                     ->color('info')
-                    ->visible(fn($record) => $record->balance > 0)
+                    ->visible(fn ($record) => $record->balance > 0)
                     ->modalHeading('Pay Full Amount')
                     ->modalWidth('5xl')
 
                     // 📌 v4 uses →form([...])
-                    ->form(function ($record) {
-                        return [
+                    ->formSchema([
+                        ComponentsSection::make('Payment Details')
+                            ->schema([
+                                TextInput::make('balance')
+                                    ->label('Remaining Balance')
+                                    ->default(fn ($record) => number_format($record->balance, 2))
+                                    ->readOnly(),
 
-                            ComponentsSection::make('Payment Details')
-                                ->schema([
-                                    TextInput::make('balance')
-                                        ->label('Remaining Balance')
-                                        ->default(number_format($record->balance, 2))
-                                        ->readOnly(),
+                                Select::make('payment_mode')
+                                    ->label('Payment Mode')
+                                    ->options(MODE)
+                                    ->native(false)
+                                    ->required(),
 
-                                    Select::make('payment_mode')
-                                        ->label('Payment Mode')
-                                        ->options(MODE)
-                                        ->native(false)
-                                        ->required(),
-
-                                    TextInput::make('transaction_id')
-                                        ->label('Transaction ID (Optional)')
-                                        ->placeholder('Enter Transaction ID'),
-                                ])
-                                ->columns(3),
-                        ];
-                    })
+                                TextInput::make('transaction_id')
+                                    ->label('Transaction ID (Optional)')
+                                    ->placeholder('Enter Transaction ID'),
+                            ])
+                            ->columns(3),
+                    ])
 
                     ->modalSubmitActionLabel(function ($record) {
-                        return 'Pay Full Amount (₹' . number_format($record->balance, 2) . ')';
+                        return 'Pay Full Amount (₹'.number_format($record->balance, 2).')';
                     })
 
                     // 💾 ACTION HANDLER
@@ -152,11 +144,11 @@ class SuppliersTable
 
                         // (3) Create SupplierBilling entry -- FULL PAY
                         $billing = $record->billings()->create([
-                            'supplier_id'    => $record->id,
-                            'bill_amount'    => 0,                  // like your controller
-                            'paid'           => $balance,           // full settlement
-                            'payment_mode'   => $data['payment_mode'], // user-selected payment mode
-                            'transaction_id' => 'FULLPAY-' . time(),   // auto generate
+                            'supplier_id' => $record->id,
+                            'bill_amount' => 0,                  // like your controller
+                            'paid' => $balance,           // full settlement
+                            'payment_mode' => $data['payment_mode'], // user-selected payment mode
+                            'transaction_id' => 'FULLPAY-'.time(),   // auto generate
                         ]);
 
                         // (4) Optional: You DON'T update supplier.balance manually
@@ -166,7 +158,7 @@ class SuppliersTable
                             ->title('Supplier fully paid successfully!')
                             ->success()
                             ->send();
-                    })
+                    }),
 
             ])
 

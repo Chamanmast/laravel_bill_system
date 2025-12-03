@@ -14,7 +14,7 @@ class EditItem extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Save subtype as type_id
-        if (!empty($data['subtype_id'])) {
+        if (! empty($data['subtype_id'])) {
             $data['type_id'] = $data['subtype_id'];
         }
         unset($data['subtype_id']);
@@ -28,6 +28,7 @@ class EditItem extends EditRecord
 
         return $data;
     }
+
     protected function getHeaderActions(): array
     {
         return [

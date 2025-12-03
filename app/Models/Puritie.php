@@ -9,8 +9,12 @@ class Puritie extends Model
 {
     protected $guarded = [];
 
-    public function type() :BelongsTo
+   public function category(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Category::class);
     }
+    public function scopeActive($q)
+{
+    return $q->where('status', 0);
+}
 }

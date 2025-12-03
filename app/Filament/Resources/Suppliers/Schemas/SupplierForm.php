@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources\Suppliers\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class SupplierForm
 {
@@ -47,7 +45,6 @@ class SupplierForm
                             ->label('Account Details')
                             ->maxLength(255)
                             ->nullable(),
-
 
                     ])
                     ->columns(2)          // 2-column layout for clean UI

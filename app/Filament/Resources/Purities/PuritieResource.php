@@ -11,21 +11,24 @@ use App\Filament\Resources\Purities\Schemas\PuritieInfolist;
 use App\Filament\Resources\Purities\Tables\PuritiesTable;
 use App\Models\Puritie;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class PuritieResource extends Resource
 {
     protected static ?string $model = Puritie::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
+
     protected static ?string $recordTitleAttribute = 'Purities';
+
     protected static ?int $navigationSort = 5;
-    //protected static ?string $pluralModelLabel  = 'Management Purities';
+    // protected static ?string $pluralModelLabel  = 'Management Purities';
 
     public static function form(Schema $schema): Schema
     {
@@ -48,10 +51,12 @@ class PuritieResource extends Resource
             //
         ];
     }
-     public static function getNavigationBadge(): ?string
+
+    public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function getPages(): array
     {
         return [

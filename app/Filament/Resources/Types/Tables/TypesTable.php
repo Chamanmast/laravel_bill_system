@@ -18,27 +18,32 @@ class TypesTable
             ->columns([
 
                 TextColumn::make('name')
-                    ->label('Type Name')
+                    ->label('Purity Name')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('parent.name')
+                 TextColumn::make('category.name')
+                    ->label('Category')
+                    ->placeholder('— No Category —')
                     ->badge()
-                    ->label('Parent Type')
-                    ->color(fn(string $state): string => match (strtolower($state)) {
-                        'gold' => 'warning',
-                        'Sliver' => 'gray',
-                        'other' => 'info',
-                        default => 'primary',
+                    ->color(function ($record) {
+                        if (!$record->category_id) {
+                            return 'secondary'; // no category
+                        }
+
+                        return match ($record->category_id) {
+                            1 => 'warning',   // Category = 1 → Yellow
+                            2 => 'secondary', // Category = 2 → Gray
+                            3 => 'info',      // Category = 3 → Blue
+                            default => 'primary', // fallback
+                        };
                     })
-                    ->placeholder('— Root Type —')
                     ->sortable()
-                    ->searchable()
-                    ->toggleable(),
+                    ->searchable(),
 
                 ToggleColumn::make('status')
                     ->label('Status')
-                    ->offColor('success')
+                    ->offColor('success'),
 
             ])
 

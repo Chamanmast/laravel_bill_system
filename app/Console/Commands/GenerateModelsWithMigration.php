@@ -17,6 +17,7 @@ class GenerateModelsWithMigration extends Command
         // Define the models and their fields with types and options
         $models = [
             'supplier_billings' => [
+                'id' => ['type' => 'id', 'options' => []],
                 'supplier_id' => ['type' => 'string', 'options' => ['nullable' => true]],
                 'bill_image' => ['type' => 'string', 'options' => ['nullable' => true]],
                 'payment' => ['type' => 'integer', 'options' => ['default' => 0]],

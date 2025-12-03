@@ -8,7 +8,9 @@ use Filament\Pages\Dashboard as BaseDashboard;
 class Dashboard extends BaseDashboard
 {
     protected static ?string $title = 'Dashboard';
-   protected static ?int $navigationSort = 15;
+
+    protected static ?int $navigationSort = 15;
+
     public function getHeaderWidgets(): array
     {
         return [];
@@ -26,4 +28,3 @@ class Dashboard extends BaseDashboard
         ];
     }
 }
-

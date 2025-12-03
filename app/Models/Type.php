@@ -4,31 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Type extends Model
 {
-
     protected $guarded = [];
+
     public $timestamps = false;
 
     // Subtype (actual stored type_id)
-    public function type(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Type::class, 'type_id');
+        return $this->belongsTo(Category::class);
     }
 
-    // Parent Type (Gold / Silver etc.)
-    public function parentType(): BelongsTo
+    public function scopeActive($q)
     {
-        return $this->belongsTo(Type::class, 'type_id')
-            ->with('parent')
-            ->first()
-            ?->parent;
+        return $q->where('status', 0);
     }
-
-    public function parent()
-{
-    return $this->belongsTo(Type::class, 'parent_id');
-}
 }

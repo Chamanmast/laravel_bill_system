@@ -11,19 +11,22 @@ use App\Filament\Resources\Units\Schemas\UnitInfolist;
 use App\Filament\Resources\Units\Tables\UnitsTable;
 use App\Models\Unit;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class UnitResource extends Resource
 {
     protected static ?string $model = Unit::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
+
     protected static ?int $navigationSort = 4;
+
     protected static ?string $recordTitleAttribute = 'Units';
 
     public static function form(Schema $schema): Schema
@@ -47,6 +50,7 @@ class UnitResource extends Resource
             //
         ];
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

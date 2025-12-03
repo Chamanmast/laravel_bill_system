@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();   // parent type (for subtypes)
+            $table->unsignedBigInteger('category_id')->nullable();   // parent type (for subtypes)
             $table->string('name', 100);
             $table->boolean('status')->default(0);
-
-            $table->foreign('parent_id')
-                ->references('id')
-                ->on('types')
-                ->onDelete('cascade');
         });
     }
 

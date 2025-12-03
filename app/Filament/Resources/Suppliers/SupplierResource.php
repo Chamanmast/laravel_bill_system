@@ -11,20 +11,24 @@ use App\Filament\Resources\Suppliers\Schemas\SupplierInfolist;
 use App\Filament\Resources\Suppliers\Tables\SuppliersTable;
 use App\Models\Supplier;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
+
     protected static ?string $recordTitleAttribute = 'Suppliers';
-    protected static ?string $pluralModelLabel  = 'Management Suppliers';
+
+    protected static ?string $pluralModelLabel = 'Management Suppliers';
+
     public static function form(Schema $schema): Schema
     {
         return SupplierForm::configure($schema);
@@ -46,10 +50,12 @@ class SupplierResource extends Resource
             //
         ];
     }
-     public static function getNavigationBadge(): ?string
+
+    public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function getPages(): array
     {
         return [

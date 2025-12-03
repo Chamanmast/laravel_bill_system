@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources\Items\Schemas;
 
+use App\Models\Category;
 use App\Models\Puritie;
-use App\Models\Supplier;
 use App\Models\Type;
 use App\Models\Unit;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ItemForm
 {
@@ -23,59 +22,60 @@ class ItemForm
                 Section::make('Basic Information')
                     ->schema([
 
+                        // ===========================
+                        //  CATEGORY SELECT
+                        // ===========================
+                        Select::make('category_id')
+                            ->label('Category')
+                            ->options(Category::active()->pluck('name', 'id'))
+                            ->searchable()
+                            ->native(false)
+                            ->reactive()
+                            ->placeholder('Select Category')
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('type_id', null);
+                                $set('purity_id', null);
+                            }),
 
 
                         // ===========================
-                        //  TYPE SELECT (Parent)
+                        //  TYPE SELECT
                         // ===========================
                         Select::make('type_id')
                             ->label('Type')
                             ->options(
-                                Type::whereNull('parent_id')->where('status', 0)->pluck('name', 'id')
-                            )
-                            ->searchable()
-                            ->native(false)
-                            ->reactive()
-                            ->afterStateUpdated(
-                                fn(callable $set) =>
-                                $set('subtype_id', null)
-                            )
-                            ->afterStateHydrated(function ($state, callable $set) {
-                                if ($state) {
-                                    // Find saved type (child id)
-                                    $child = Type::find($state);
-
-                                    // If this type has a parent → means it's a subtype
-                                    if ($child && $child->parent_id) {
-                                        // Set parent type
-                                        $set('type_id', $child->parent_id);
-
-                                        // Set subtype field
-                                        $set('subtype_id', $child->id);
-                                    }
-                                }
-                            }),
-
-                        // ===========================
-                        //  SUBTYPE SELECT (AJAX)
-                        // ===========================
-                        Select::make('subtype_id')
-                            ->label('Subtype')
-                            ->options(
                                 fn(callable $get) =>
-                                Type::where('parent_id', $get('type_id'))->where('status', 0)->pluck('name', 'id')
+                                $get('category_id')
+                                    ? Type::active()
+                                    ->where('category_id', $get('category_id'))
+                                    ->pluck('name', 'id')
+                                    : []
                             )
                             ->searchable()
                             ->native(false)
                             ->reactive()
-                            ->placeholder('Select Type First')
-                            ->disabled(fn(callable $get) => empty($get('type_id'))),
+                            ->placeholder('Select Category First')
+                            ->afterStateUpdated(fn(callable $set) => $set('purity_id', null))
+                            ->disabled(fn(callable $get) => ! filled($get('category_id'))),
 
+
+                        // ===========================
+                        //  PURITY SELECT
+                        // ===========================
                         Select::make('purity_id')
                             ->label('Purity')
-                            ->options(Puritie::where('status', 0)->pluck('name', 'id'))
+                            ->options(
+                                fn(callable $get) =>
+                                $get('category_id')
+                                    ? Puritie::active()
+                                    ->where('category_id', $get('category_id'))
+                                    ->pluck('name', 'id')
+                                    : []
+                            )
                             ->searchable()
-                            ->native(false),
+                            ->native(false)
+                            ->placeholder('Select Type First')
+                            ->disabled(fn(callable $get) => ! filled($get('type_id'))),
 
                         Select::make('unit_id')
                             ->label('Unit')
@@ -144,13 +144,11 @@ class ItemForm
                             ->label('Product Status')
                             ->options([
                                 'in_stock' => 'In Stock',
-                                'sold'     => 'Sold',
+                                'sold' => 'Sold',
                                 'returned' => 'Returned',
                             ])
                             ->native(false)
                             ->default('in_stock'),
-
-
 
                     ])
                     ->columns(2)

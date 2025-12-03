@@ -44,7 +44,7 @@
             <!-- Login Form -->
             <div class="login-form">
                 <h2 class="mb-4">Login</h2>
-                <a href="{{ route('admin.login') }}" class="btn btn-primary w-100">Login</a>
+                <a href="{{ route('filament.admin.auth.login') }}" class="btn btn-primary w-100">Login</a>
                 {{-- {{ dd( App\models\Customer::find(1)->bills->sum('grand_total') - App\models\Customer::find(1)->payments->sum('amount')  ) }} --}}
 
             </div>

@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources\Items\Tables;
 
+use App\Models\Puritie;
 use App\Models\Supplier;
 use App\Models\Type;
-use App\Models\Puritie;
 use App\Models\Unit;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -40,7 +38,6 @@ class ItemsTable
                     ->searchable()
                     ->sortable(),
 
-
                 TextColumn::make('type.name')
                     ->label('Type')
                     ->toggleable()
@@ -49,22 +46,20 @@ class ItemsTable
                 TextColumn::make('purity.name')
                     ->label('Purity')
                     ->formatStateUsing(function ($state) {
-                        if (!$state) return '-';
+                        if (! $state) {
+                            return '-';
+                        }
 
                         $parts = explode('-', $state, 2);
 
                         // Trim spaces
-                        $left  = trim($parts[0]);           // "24K"
-                        $right = trim($parts[1] ?? '');     // "(99.9% Pure Gold)"
+                        $left = trim($parts[0]);           // "24K"
+                        // $right = trim($parts[1] ?? '');     // "(99.9% Pure Gold)"
 
                         return "{$left}";
                     })
                     ->badge()
                     ->toggleable(),
-
-
-
-
 
                 TextColumn::make('gross_weight')
                     ->label('Gross Wt')
@@ -79,7 +74,7 @@ class ItemsTable
                 TextColumn::make('stock_qty')
                     ->label('Qty')
                     ->sortable(),
-                   TextColumn::make('price')
+                TextColumn::make('price')
                     ->label('Price')
                     ->money('INR')
                     ->sortable(),
@@ -97,14 +92,14 @@ class ItemsTable
             ->filters([
 
                 SelectFilter::make('type_id')
-                    ->label('Filter by Subtype')
+                    ->label('Filter by Type')
                     ->options(
                         Type::query()
-                            ->whereNotNull('parent_id')
+                            ->where('status', 0)
                             ->pluck('name', 'id')
                     )
                     ->searchable()
-                    ->placeholder('All Subtypes'),
+                    ->placeholder('All Types'),
 
 
                 SelectFilter::make('purity_id')

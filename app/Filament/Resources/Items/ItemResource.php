@@ -11,11 +11,11 @@ use App\Filament\Resources\Items\Schemas\ItemInfolist;
 use App\Filament\Resources\Items\Tables\ItemsTable;
 use App\Models\Item;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ItemResource extends Resource
 {
@@ -23,11 +23,14 @@ class ItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
     protected static ?string $recordTitleAttribute = 'Items';
-    protected static ?string $pluralModelLabel  = 'Products';
+
+    protected static ?string $pluralModelLabel = 'Products';
+
     protected static ?int $navigationSort = 5;
+
     public static function form(Schema $schema): Schema
     {
         return ItemForm::configure($schema);
@@ -49,10 +52,12 @@ class ItemResource extends Resource
             //
         ];
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function getPages(): array
     {
         return [

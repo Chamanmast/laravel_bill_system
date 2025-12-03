@@ -13,18 +13,18 @@ class UnitForm
         return $schema
             ->components([
                 Section::make('Unit Details')
-            ->schema([
-                 TextInput::make('name')
-                        ->label('Name')
-                        ->maxLength(100)
-                        ->required(),
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Name')
+                            ->maxLength(100)
+                            ->required(),
                         TextInput::make('fname')
-                        ->label('Full Name')
-                        ->maxLength(100)
-                        ->required(),
-            ])
-             ->columns(2)
-             ->columnSpanFull(),
+                            ->label('Full Name')
+                            ->maxLength(100)
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

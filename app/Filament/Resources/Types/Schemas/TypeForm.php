@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Types\Schemas;
 
+use App\Models\Category;
+use App\Models\Type;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use App\Models\Type; // Add this for query
+use Filament\Schemas\Schema; // Add this for query
 
 class TypeForm
 {
@@ -18,24 +18,21 @@ class TypeForm
                 Section::make('Type Details')
                     ->schema([
 
-                        Select::make('parent_id')
-                            ->label('Parent Type')
+                         // category Dropdown
+                        Select::make('category_id')
+                            ->label('category')
                             ->native(false)
                             ->searchable()
                             ->options(
-                                Type::query()
-                                    ->whereNull('parent_id')   // Only top-level parents
-                                    ->pluck('name', 'id')
+                                Category::pluck('name', 'id')
                             )
-                            ->placeholder('Select Parent (optional)')
-                            ->nullable(),
-
-                        TextInput::make('name')
-                            ->label('Type Name')
-                            ->maxLength(100)
+                            ->placeholder('Select Category')
                             ->required(),
 
-
+                        // Name
+                         TextInput::make('name')
+                            ->label('Item Name')
+                            ->required(),
 
                     ])
                     ->columns(2)

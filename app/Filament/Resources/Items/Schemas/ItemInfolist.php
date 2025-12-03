@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Items\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ItemInfolist
 {
@@ -21,7 +21,6 @@ class ItemInfolist
 
                         TextEntry::make('name')
                             ->label('Item Name'),
-
 
                         // Type
                         TextEntry::make('type.name')
@@ -42,7 +41,6 @@ class ItemInfolist
                     ->columns(2)
                     ->columnSpanFull(),
 
-
                 Section::make('Pricing')
                     ->schema([
 
@@ -60,7 +58,6 @@ class ItemInfolist
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
-
 
                 Section::make('Weight & Stock')
                     ->schema([
@@ -80,15 +77,15 @@ class ItemInfolist
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'in_stock' => 'success',
-                                'sold'     => 'danger',
+                                'sold' => 'danger',
                                 'returned' => 'warning',
-                                default    => 'gray',
+                                default => 'gray',
                             })
                             ->formatStateUsing(fn (string $state): string => match ($state) {
                                 'in_stock' => 'In Stock',
-                                'sold'     => 'Sold',
+                                'sold' => 'Sold',
                                 'returned' => 'Returned',
-                                default    => 'Unknown',
+                                default => 'Unknown',
                             }),
 
                         // Active Status Badge
@@ -101,7 +98,6 @@ class ItemInfolist
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
-
 
                 Section::make('Timestamps')
                     ->schema([

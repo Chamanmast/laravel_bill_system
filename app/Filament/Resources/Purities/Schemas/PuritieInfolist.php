@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Purities\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class PuritieInfolist
 {
@@ -16,13 +15,11 @@ class PuritieInfolist
                 Section::make('Purity Information')
                     ->schema([
 
-                        TextEntry::make('name')
-                            ->label('Purity Name'),
+                         TextEntry::make('name')
+                            ->label('Type Name'),
 
-                        TextEntry::make('type.name')
-                            ->label('Type')
-                            ->placeholder('— No Type —'),
-
+                        TextEntry::make('category.name')
+                            ->label('category Name'),
 
 
                     ])

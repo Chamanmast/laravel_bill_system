@@ -11,20 +11,23 @@ use App\Filament\Resources\Customers\Schemas\CustomerInfolist;
 use App\Filament\Resources\Customers\Tables\CustomersTable;
 use App\Models\Customer;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | UnitEnum | null $navigationGroup = 'Stock Management';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Stock Management';
+
     protected static ?string $recordTitleAttribute = 'Customer';
-    protected static ?string $pluralModelLabel  = 'Management Customers';
+
+    protected static ?string $pluralModelLabel = 'Management Customers';
 
     public static function form(Schema $schema): Schema
     {
@@ -47,10 +50,12 @@ class CustomerResource extends Resource
             //
         ];
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function getPages(): array
     {
         return [

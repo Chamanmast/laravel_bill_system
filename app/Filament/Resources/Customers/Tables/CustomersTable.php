@@ -37,7 +37,7 @@ class CustomersTable
                     ->sortable()
                     ->toggleable(),
 
-                 ToggleColumn::make('status')
+                ToggleColumn::make('status')
                     ->label('Status')
                     ->offColor('success') // Optional: Color for "on" state
                     ->onColor('danger'),
