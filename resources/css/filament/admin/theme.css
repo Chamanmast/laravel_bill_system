@@ -45,3 +45,72 @@
     @apply bg-main-white rounded-full shadow-md hover:bg-main-black hover:text-main-white;
 }
 
+
+bill-table-wrapper {
+    @apply relative overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm
+           dark:border-gray-700 dark:bg-gray-800;
+}
+
+/* TABLE */
+.bill-table {
+    @apply min-w-full text-sm;
+}
+
+/* HEADER */
+.bill-table thead {
+    @apply bg-gray-50 dark:bg-gray-900/50;
+}
+
+.bill-table thead th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide
+           text-gray-600 dark:text-gray-300;
+}
+
+.bill-table thead th.text-right {
+    @apply text-right;
+}
+
+.bill-table thead th.text-center {
+    @apply text-center;
+}
+
+/* BODY */
+.bill-table tbody {
+    @apply divide-y divide-gray-100 dark:divide-gray-700;
+}
+
+.bill-table tbody tr {
+    @apply transition hover:bg-gray-50 dark:hover:bg-gray-700/40;
+}
+
+/* CELLS */
+.bill-table td {
+    @apply px-4 py-2 text-gray-800 dark:text-gray-200;
+}
+
+/* SKU */
+.bill-table .cell-sku {
+    @apply font-mono text-gray-900 dark:text-gray-100;
+}
+
+/* NUMERIC CELLS */
+.bill-table .cell-number {
+    @apply text-right tabular-nums;
+}
+
+/* TOTAL */
+.bill-table .cell-total {
+    @apply text-right font-semibold tabular-nums
+           text-primary-600 dark:text-primary-400;
+}
+
+/* ACTION */
+.bill-table .cell-action {
+    @apply px-2 py-2 text-center;
+}
+
+/* EMPTY STATE */
+.bill-table-empty {
+    @apply px-6 py-10 text-center text-sm
+           text-gray-500 dark:text-gray-400;
+}
