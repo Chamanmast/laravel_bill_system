@@ -92,7 +92,7 @@ class SuppliersTable
                     ->modalWidth('5xl')
 
                     // 📌 v4 uses →form([...])
-                    ->formSchema([
+                    ->form([
                         ComponentsSection::make('Payment Details')
                             ->schema([
                                 TextInput::make('balance')
