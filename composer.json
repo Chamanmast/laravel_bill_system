@@ -8,7 +8,7 @@
     "require": {
         "php": "^8.2",
         "caresome/filament-auth-designer": "^1.0",
-        "filament/filament": "4.0",
+        "filament/filament": "^4.9",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },
