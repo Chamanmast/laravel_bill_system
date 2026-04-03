@@ -10,174 +10,167 @@ class GenerateModelsWithMigration extends Command
 {
     protected $signature = 'app:gen';
 
-    protected $description = 'Generate multiple models with migrations + Filament v4 resources';
+    protected $description = 'Generate models + migrations + Filament v4 resources';
 
     public function handle()
     {
-        // Define the models and their fields with types and options
         $models = [
-            'supplier_billings' => [
-                'id' => ['type' => 'id', 'options' => []],
-                'supplier_id' => ['type' => 'string', 'options' => ['nullable' => true]],
-                'bill_image' => ['type' => 'string', 'options' => ['nullable' => true]],
-                'payment' => ['type' => 'integer', 'options' => ['default' => 0]],
-                'received' => ['type' => 'integer', 'options' => ['default' => 0]],
-                'payment_mode' => ['type' => 'integer', 'options' => ['default' => 0]],
-                'transaction_id' => ['type' => 'string', 'options' => ['nullable' => true]],
-                'note' => ['type' => 'mediumtext', 'options' => ['nullable' => true]],
-                // Timestamps
-                'created_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
-                'updated_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
-            ],
 
+             // 'supplier_billings' => [
+            //     'id' => ['type' => 'id', 'options' => []],
+            //     'supplier_id' => ['type' => 'string', 'options' => ['nullable' => true]],
+            //     'bill_image' => ['type' => 'string', 'options' => ['nullable' => true]],
+            //     'payment' => ['type' => 'integer', 'options' => ['default' => 0]],
+            //     'received' => ['type' => 'integer', 'options' => ['default' => 0]],
+            //     'payment_mode' => ['type' => 'integer', 'options' => ['default' => 0]],
+            //     'transaction_id' => ['type' => 'string', 'options' => ['nullable' => true]],
+            //     'note' => ['type' => 'mediumtext', 'options' => ['nullable' => true]],
+            //     // Timestamps
+            //     'created_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
+            //     'updated_at' => ['type' => 'timestamp', 'options' => ['useCurrent' => true]],
+            // ],
         ];
 
         foreach ($models as $model => $fields) {
-            $modelName = Str::studly($model);
+            $modelName = Str::studly(Str::singular($model));
+            $table     = Str::plural(Str::snake($modelName));
 
-            // create model + migration
+            // 1. Create model + migration
             $this->call('make:model', [
-                'name' => $modelName,          // argument "name"
-                '--migration' => true,         // option
+                'name' => $modelName,
+                '--migration' => true,
             ]);
 
-            // // create filament resource (v4)
+            // 2. Create Filament Resource
             $this->call('make:filament-resource', [
                 $modelName,
-                'model' => $modelName,                         // argument "name"
-                '--generate' => true,                         // List/Create/Edit
-                '--view' => true,                             // include read-only View page (skips prompt)
-                '--simple' => false,                          // keep separate pages
-                '--panel' => 'admin',                         // target panel
-                '--soft-deletes' => false,                    // set true if model uses SoftDeletes
-                '--record-title-attribute' => Str::plural($modelName),         // avoid title prompt
-                '--no-interaction' => true,                   // suppress any remaining questions
+                '--generate' => true,
+                '--view' => true,
+                '--panel' => 'admin',
+                '--no-interaction' => true,
             ]);
 
-            // update migration fields
-            $this->updateMigrationFields($modelName, $fields);
+            // 3. Update migration
+          //  $this->updateMigrationFields($table, $fields);
 
-            $this->info("✔ $modelName model + migration + Filament resource created.");
+            $this->info("✔ {$modelName} created successfully.");
         }
 
         return self::SUCCESS;
     }
 
-    protected function generateModel(string $model)
+    /**
+     * Get correct migration file for table
+     */
+    protected function getMigrationFileForTable(string $table): string
     {
-        $this->call('make:model', [
-            'name' => $model,
-            '--migration' => true,
-        ]);
-    }
+        $files = collect(File::files(database_path('migrations')));
 
-    protected function generateFilamentResource(string $model)
-    {
-        $this->call('make:filament-resource', [
-            'name' => $model,
-        ]);
-    }
+        $file = $files->first(function ($file) use ($table) {
+            return str_contains($file->getFilename(), "create_{$table}_table");
+        });
 
-    protected function getLastMigrationFile(): string
-    {
-        $last = collect(File::files(database_path('migrations')))
-            ->sortByDesc(fn ($file) => $file->getMTime())
-            ->first();
-
-        if (! $last) {
-            throw new \RuntimeException('No migration files found in database/migrations');
+        if (!$file) {
+            throw new \RuntimeException("Migration for table {$table} not found.");
         }
 
-        return $last->getPathname();
+        return $file->getPathname();
     }
 
-    protected function updateMigrationFields(string $model, array $fields)
+    /**
+     * Update migration fields dynamically
+     */
+    protected function updateMigrationFields(string $table, array $fields)
     {
-        $migrationFile = $this->getLastMigrationFile();
-        $table = Str::plural(Str::snake($model));
+        $migrationFile = $this->getMigrationFileForTable($table);
 
         $fieldLines = '';
 
         foreach ($fields as $field => $props) {
-            // Support multiple input shapes: ['type'=>'string','options'=>[]] or numeric array
-            if (is_string($props)) {
-                $type = $props;
-                $options = [];
-            } elseif (isset($props['type'])) {
-                $type = $props['type'];
-                $options = $props['options'] ?? [];
-            } elseif (is_array($props) && isset($props[0])) {
-                $type = $props[0];
-                $options = $props[1] ?? [];
-            } else {
-                $type = 'string';
-                $options = [];
-            }
 
-            $typeLower = strtolower($type);
-            $typeMap = [
-                'mediumtext' => 'mediumText',
-                'text' => 'text',
-                'tinyint' => 'tinyInteger',
-                'tinyinteger' => 'tinyInteger',
-                'boolean' => 'boolean',
-                'integer' => 'integer',
-                'bigint' => 'bigInteger',
-                'biginteger' => 'bigInteger',
-                'timestamp' => 'timestamp',
-                'string' => 'string',
-                'id' => 'id',
-            ];
+            $type = $props['type'] ?? 'string';
+            $options = $props['options'] ?? [];
 
-            $method = $typeMap[$typeLower] ?? $type;
-
-            // build line
-            if ($method === 'id') {
-                $line = '$table->id();';
-                $fieldLines .= "            $line\n";
-
+            // ID
+            if ($type === 'id') {
+                $fieldLines .= "            \$table->id();\n";
                 continue;
             }
 
-            $length = $options['length'] ?? $options['maxLength'] ?? null;
+            // FOREIGN KEY
+            if ($type === 'foreignId') {
+                $line = "\$table->foreignId('$field')";
 
-            $line = "\$table->$method('$field'";
-            if ($length) {
-                $line .= ", $length";
-            }
-            $line .= ')';
+                if (!empty($options['constrained'])) {
+                    $line .= "->constrained('{$options['constrained']}')";
+                }
 
-            if (! empty($options['nullable'])) {
-                $line .= '->nullable()';
+                if (!empty($options['cascadeOnDelete'])) {
+                    $line .= "->cascadeOnDelete()";
+                }
+
+                if (!empty($options['index'])) {
+                    $line .= "->index()";
+                }
+
+                $line .= ';';
+
+                $fieldLines .= "            $line\n";
+                continue;
             }
+
+            // ENUM
+            if ($type === 'enum') {
+                $values = var_export($options['values'] ?? [], true);
+
+                $line = "\$table->enum('$field', $values)";
+
+                if (isset($options['default'])) {
+                    $line .= "->default('{$options['default']}')";
+                }
+
+                $line .= ';';
+
+                $fieldLines .= "            $line\n";
+                continue;
+            }
+
+            // NORMAL TYPES
+            $line = "\$table->$type('$field')";
+
+            if (!empty($options['nullable'])) {
+                $line .= "->nullable()";
+            }
+
             if (array_key_exists('default', $options)) {
-                $default = $options['default'];
-                $line .= '->default('.var_export($default, true).')';
+                $default = var_export($options['default'], true);
+                $line .= "->default($default)";
             }
-            if (! empty($options['unique'])) {
-                $line .= '->unique()';
+
+            if (!empty($options['unique'])) {
+                $line .= "->unique()";
             }
-            if (! empty($options['unsigned'])) {
-                $line .= '->unsigned()';
-            }
-            if (! empty($options['useCurrent'])) {
-                $line .= '->useCurrent()';
+
+            if (!empty($options['index'])) {
+                $line .= "->index()";
             }
 
             $line .= ';';
+
             $fieldLines .= "            $line\n";
         }
 
+        // Add timestamps automatically
+        $fieldLines .= "            \$table->timestamps();\n";
+
         $content = file_get_contents($migrationFile);
 
-        $pattern = '/Schema::create\(\s*[\'\"]'.preg_quote($table, '/').'[\'\"]\s*,\s*function\s*\(Blueprint\s*\$table\)\s*\{(.*?)\}\s*\);/s';
+        $pattern = '/Schema::create\(\s*[\'"]' . preg_quote($table, '/') . '[\'"]\s*,\s*function\s*\(Blueprint\s*\$table\)\s*\{(.*?)\}\s*\);/s';
 
-        if (preg_match($pattern, $content)) {
-            $replacement = "Schema::create('$table', function (Blueprint \$table) {\n$fieldLines        });";
-            $updated = preg_replace($pattern, $replacement, $content, 1);
-            file_put_contents($migrationFile, $updated);
-        } else {
-            $this->warn("Could not find Schema::create for table $table in migration: $migrationFile");
-        }
+        $replacement = "Schema::create('$table', function (Blueprint \$table) {\n$fieldLines        });";
+
+        $updated = preg_replace($pattern, $replacement, $content, 1);
+
+        file_put_contents($migrationFile, $updated);
     }
 }

@@ -9,7 +9,7 @@ class Dashboard extends BaseDashboard
 {
     protected static ?string $title = 'Dashboard';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 1;
 
     public function getHeaderWidgets(): array
     {

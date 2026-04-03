@@ -10,21 +10,16 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class MainOverview extends BaseWidget
 {
+    protected int | array | null $columns = 1;
+
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Customers', Customer::count())
+            Stat::make('Total Customers', 200)
                 ->description('All registered customers')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
-            Stat::make('Total Items', Item::count())
-                ->description('All registered items')
-                ->descriptionIcon('heroicon-m-cube')
-                ->color('warning'),
-            Stat::make('Total Suppliers', Supplier::count())
-                ->description('All registered suppliers')
-                ->descriptionIcon('heroicon-m-truck')
-                ->color('info'),
+
         ];
     }
 }

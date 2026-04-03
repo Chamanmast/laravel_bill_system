@@ -1,0 +1,30 @@
+<?php
+namespace App\Filament\Resources\Categories\Schemas;
+
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+class CategoryForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Category')
+                    ->schema([
+                        Grid::make(1)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Category Name')
+                                    ->maxLength(100)
+                                    ->required(),
+                            ]),
+
+                    ])
+                    ->columnSpanFull(),
+
+            ]);
+    }
+}
