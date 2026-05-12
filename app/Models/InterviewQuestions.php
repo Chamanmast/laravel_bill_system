@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class InterviewQuestions extends Model
 {
@@ -23,5 +24,13 @@ class InterviewQuestions extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+     protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $model->user_id = Auth::id();
+            }
+        });
     }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "category_id": 1,
+    "question": "What is PHP?",
+    "answer": "PHP is a server-side scripting language.",
+    "difficulty": "easy"
+  },
+  {
+    "category_id": 1,
+    "question": "What is Laravel middleware?",
+    "answer": "Middleware filters HTTP requests entering your application.",
+    "difficulty": "medium"
+  },
+  {
+    "category_id": 1,
+    "question": "Explain service container in Laravel",
+    "answer": "Service container manages class dependencies.",
+    "difficulty": "hard"
+  }
+]

@@ -27,12 +27,16 @@ class InterviewQuestionsForm
                                 ->preload()
                                 ->required(),
 
-                            Select::make('user_id')
-                                ->label('Created By')
-                                ->relationship('user', 'name')
-                                ->searchable()
-                                ->preload()
+                            Select::make('difficulty')
+                                ->label('Difficulty')
+                                ->options([
+                                    'easy' => 'Easy',
+                                    'medium' => 'Medium',
+                                    'hard' => 'Hard',
+                                ])
+                                ->default('easy')
                                 ->required(),
+
 
                         ]),
 
@@ -51,27 +55,6 @@ class InterviewQuestionsForm
                 ])
                 ->columnSpanFull(),
 
-            Section::make('Additional Info')
-                ->schema([
-
-                    Grid::make(1)
-                        ->schema([
-
-                            Select::make('difficulty')
-                                ->label('Difficulty')
-                                ->options([
-                                    'easy' => 'Easy',
-                                    'medium' => 'Medium',
-                                    'hard' => 'Hard',
-                                ])
-                                ->default('easy')
-                                ->required(),
-
-
-                        ]),
-
-                ])
-                ->columnSpanFull(),
 
         ]);
     }
